@@ -1,12 +1,19 @@
 -#  This file is app/views/movies/index.html.haml
 %h2 All Movies
 
+= form_tag movies_path, :method => :get do
+  Include:
+  - @all_ratings.each do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]"
+  = submit_tag 'Refresh'
+
 %table#movies.table.table-striped.col-md-12
   %thead
     %tr
-      %th{:class => highlight(@title_selected)}= sortable_column('title') 
+      %th{:class => (highlight @title_selected)}= sortable_column 'title'  
       %th Rating
-      %th{:class => highlight(@release_date_selected)}= sortable_column('release_date')
+      %th{:class => (highlight @release_date_selected)}= sortable_column 'release_date'
       %th More Info
   %tbody
     - @movies.each do |movie|
