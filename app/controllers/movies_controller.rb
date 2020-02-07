@@ -14,9 +14,10 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.get_all_ratings()
     ratings = params[:ratings]
     sort = params[:sort]
+    @ratings_filter = get_ratings_filter(ratings)
     @title_selected = sort == 'title'
     @release_date_selected = sort == 'release_date'
-    @movies = Movie.filter_by_rating(get_ratings_filter(ratings)).order(sort)
+    @movies = Movie.filter_by_rating(@ratings_filter).order(sort)
   end
 
   def new
@@ -49,12 +50,8 @@ class MoviesController < ApplicationController
 
   def get_ratings_filter(ratings)
     filter = Array.new()
-    unless ratings.nil?
-      ratings.each_key {|rating| filter.push(rating)}
-      filter
-    else
-      nil
-    end
+    ratings&.each_key {|rating| filter.push(rating)}
+    filter
   end
 
 end
