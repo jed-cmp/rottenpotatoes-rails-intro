@@ -59,8 +59,11 @@ class MoviesController < ApplicationController
 
   def track_index_settings
     session[:ratings] ||= {:G => 1, :PG => 1, :'PG-13' => 1, :R => 1}
-    params[:ratings] ||= session[:ratings]
-    params[:sort] ||= session[:sort]
+    unless params[:ratings] == session[:ratings] && params[:sort] == session[:sort]
+      params[:ratings] ||= session[:ratings]
+      params[:sort] ||= session[:sort]
+      redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort])
+    end
     session[:ratings] = params[:ratings]
     session[:sort] = params[:sort]
   end
