@@ -11,10 +11,11 @@ class MoviesController < ApplicationController
   end
 
   def index
+    track_index_settings()
     @all_ratings = Movie.get_all_ratings()
     ratings = params[:ratings]
     sort = params[:sort]
-    @ratings_filter = ratings.nil? ? @all_ratings : get_ratings_filter(ratings)
+    @ratings_filter = get_ratings_filter(ratings)
     @title_selected = sort == 'title'
     @release_date_selected = sort == 'release_date'
     @movies = Movie.filter_by_rating(@ratings_filter).order(sort)
@@ -48,10 +49,20 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  private
+
   def get_ratings_filter(ratings)
     filter = Array.new()
     ratings&.each_key {|rating| filter.push(rating)}
     filter
+  end
+
+  def track_index_settings
+    session[:ratings] ||= {:G => 1, :PG => 1, :'PG-13' => 1, :R => 1}
+    params[:ratings] ||= session[:ratings]
+    params[:sort] ||= session[:sort]
+    session[:ratings] = params[:ratings]
+    session[:sort] = params[:sort]
   end
 
 end
