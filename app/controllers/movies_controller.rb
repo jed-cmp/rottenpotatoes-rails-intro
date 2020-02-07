@@ -14,7 +14,7 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.get_all_ratings()
     ratings = params[:ratings]
     sort = params[:sort]
-    @ratings_filter = get_ratings_filter(ratings)
+    @ratings_filter = ratings.nil? ? @all_ratings : get_ratings_filter(ratings)
     @title_selected = sort == 'title'
     @release_date_selected = sort == 'release_date'
     @movies = Movie.filter_by_rating(@ratings_filter).order(sort)
