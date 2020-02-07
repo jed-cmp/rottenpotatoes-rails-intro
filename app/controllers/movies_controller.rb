@@ -12,9 +12,11 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.get_all_ratings()
-    @title_selected = params[:sort] == 'title'
-    @release_date_selected = params[:sort] == 'release_date'
-    @movies = Movie.order(params[:sort])
+    ratings = params[:ratings]
+    sort = params[:sort]
+    @title_selected = sort == 'title'
+    @release_date_selected = sort == 'release_date'
+    @movies = Movie.filter_by_rating(get_ratings_filter(ratings)).order(sort)
   end
 
   def new
@@ -43,6 +45,16 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+
+  def get_ratings_filter(ratings)
+    filter = Array.new()
+    unless ratings.nil?
+      ratings.each_key {|rating| filter.push(rating)}
+      filter
+    else
+      nil
+    end
   end
 
 end
